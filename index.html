@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University SAT Aggregate Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 400px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555555;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #dddddd;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aggregate Calculator</h1>
+        <form id="aggregateForm">
+            <label for="fieldSelect">Select Field:</label>
+            <select id="fieldSelect" required>
+                <option value="computing">Computing</option>
+                <option value="engineering">Engineering</option>
+                <option value="bba">BBA/BA</option>
+            </select>
+
+            <label for="totalMarksTest">Total Marks (Admission Test):</label>
+            <input type="number" id="totalMarksTest" required>
+
+            <label for="obtainedMarksTest">Obtained Marks (Admission Test):</label>
+            <input type="number" id="obtainedMarksTest" required>
+
+            <label for="totalMarksHSSC">Total Marks (HSSC/equivalent):</label>
+            <input type="number" id="totalMarksHSSC" required>
+
+            <label for="obtainedMarksHSSC">Obtained Marks (HSSC/equivalent):</label>
+            <input type="number" id="obtainedMarksHSSC" required>
+
+            <label for="totalMarksSSC">Total Marks (SSC/equivalent):</label>
+            <input type="number" id="totalMarksSSC" required>
+
+            <label for="obtainedMarksSSC">Obtained Marks (SSC/equivalent):</label>
+            <input type="number" id="obtainedMarksSSC" required>
+
+            <button type="button" onclick="calculateAggregate()">Find Aggregate</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateAggregate() {
+            // Retrieve values from input fields
+            const field = document.getElementById('fieldSelect').value;
+            const totalMarksTest = parseFloat(document.getElementById('totalMarksTest').value);
+            const obtainedMarksTest = parseFloat(document.getElementById('obtainedMarksTest').value);
+            const totalMarksHSSC = parseFloat(document.getElementById('totalMarksHSSC').value);
+            const obtainedMarksHSSC = parseFloat(document.getElementById('obtainedMarksHSSC').value);
+            const totalMarksSSC = parseFloat(document.getElementById('totalMarksSSC').value);
+            const obtainedMarksSSC = parseFloat(document.getElementById('obtainedMarksSSC').value);
+
+            // Validate inputs
+            if (
+                isNaN(totalMarksTest) || isNaN(obtainedMarksTest) ||
+                isNaN(totalMarksHSSC) || isNaN(obtainedMarksHSSC) ||
+                isNaN(totalMarksSSC) || isNaN(obtainedMarksSSC)
+            ) {
+                alert('Please enter all required fields.');
+                return;
+            }
+
+            // Validate that obtained marks do not exceed total marks
+            if (
+                obtainedMarksTest > totalMarksTest ||
+                obtainedMarksHSSC > totalMarksHSSC ||
+                obtainedMarksSSC > totalMarksSSC
+            ) {
+                alert('Obtained marks cannot exceed total marks.');
+                return;
+            }
+
+            // Calculate percentages
+            const testPercentage = (obtainedMarksTest / totalMarksTest) * 100;
+            const hsscPercentage = (obtainedMarksHSSC / totalMarksHSSC) * 100;
+            const sscPercentage = (obtainedMarksSSC / totalMarksSSC) * 100;
+
+            // Determine weightage based on selected field
+            let testWeightage, hsscWeightage, sscWeightage;
+            if (field === "computing") {
+                testWeightage = 0.5;
+                hsscWeightage = 0.4;
+                sscWeightage = 0.1;
+            } else if (field === "engineering") {
+                testWeightage = 0.33;
+                hsscWeightage = 0.5;
+                sscWeightage = 0.17;
+            } else if (field === "bba") {
+                testWeightage = 0.5;
+                hsscWeightage = 0.4;
+                sscWeightage = 0.1;
+            }
+
+            // Calculate aggregate
+            const aggregate = (testPercentage * testWeightage) + 
+                              (hsscPercentage * hsscWeightage) + 
+                              (sscPercentage * sscWeightage);
+
+            // Display result
+            document.getElementById('result').innerText = `Your aggregate is: ${aggregate.toFixed(2)}%`;
+        }
+    </script>
+</body>
+</html>
